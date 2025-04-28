@@ -30,7 +30,7 @@ __docformat__ = "restructuredtext"
 iflogger = logging.getLogger("nipype.interface")
 
 
-class Level1DesignInputSpec(SPMCommandInputSpec):
+class SplineLevel1DesignInputSpec(SPMCommandInputSpec):
     spm_mat_dir = Directory(
         exists=True, field="dir", desc="directory to store SPM.mat file (opt)"
     )
@@ -62,7 +62,7 @@ class Level1DesignInputSpec(SPMCommandInputSpec):
         desc=("Factor specific information file (opt)"),
     )
     bases = traits.Dict(
-        traits.Enum("hrf", "fourier", "fourier_han", "gamma", "fir"),
+        traits.Enum("hrf", "fourier", "fourier_han", "gamma", "fir", "spline"),
         field="bases",
         desc="""\
 Dictionary names of the basis function to parameters:
@@ -77,6 +77,12 @@ Dictionary names of the basis function to parameters:
         * length -- (int) Post-stimulus window length (in seconds)
         * order -- (int) Number of basis functions
 
+    * spline:
+
+        * length -- (int) Post-stimulus window length (in seconds)
+        * order -- (int) Spline order (polynomial order + 1)
+        * degree -- (int) Number of basis functions
+    
 """,
         mandatory=True,
     )
@@ -116,7 +122,7 @@ Dictionary names of the basis function to parameters:
     )
 
 
-class Level1DesignOutputSpec(TraitedSpec):
+class SplineLevel1DesignOutputSpec(TraitedSpec):
     spm_mat_file = File(exists=True, desc="SPM mat file")
 
 
@@ -138,8 +144,8 @@ class Level1Design(SPMCommand):
 
     """
 
-    input_spec = Level1DesignInputSpec
-    output_spec = Level1DesignOutputSpec
+    input_spec = SplineLevel1DesignInputSpec
+    output_spec = SplineLevel1DesignOutputSpec
 
     _jobtype = "stats"
     _jobname = "fmri_spec"
